@@ -1,10 +1,5 @@
-# rollup-react-example
-[![Build Status](https://travis-ci.org/camille-hdl/rollup-react-example.svg?branch=master)](https://travis-ci.org/camille-hdl/rollup-react-example) 
-
-Example dev environment for React using [Rollup](https://rollupjs.org) with code splitting, ES modules, Service Workers, Babel and Flow.  
-This repository completes a [step-by-step guide on Medium](https://medium.com/@camille_hdl/rollup-based-dev-environment-for-javascript-part-1-eab8523c8ee6) on how to setup Rollup for JavaScript development.
-
-Sample configuration files for Travis CI and Netlify are provided.
+# initiative.rocks
+[![Build Status](https://travis-ci.org/camille-hdl/initiative-rocks.svg?branch=master)](https://travis-ci.org/camille-hdl/initiative-rocks) 
 
 
 ## Commands
