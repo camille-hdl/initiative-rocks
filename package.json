@@ -1,0 +1,91 @@
+{
+  "name": "initiative-rocks",
+  "version": "0.0.1",
+  "description": "Combat tracker for d&d 5e",
+  "main": "public/index.html",
+  "scripts": {
+    "build": "run-s buildrollup workbox",
+    "buildrollup": "rollup -c --prod --mini",
+    "workboxesm": "workbox injectManifest workbox-config-esm.js",
+    "workboxsystem": "workbox injectManifest workbox-config-system.js",
+    "workbox": "run-p workboxesm workboxsystem",
+    "watch": "rollup -c -w",
+    "serve": "serve",
+    "test": "run-s jest build testci",
+    "testci": "start-server-and-test serve http://localhost:5000 cypress:run",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:install": "cypress install",
+    "jest": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/camille-hdl/initiative-rocks.git"
+  },
+  "keywords": [
+    "initiative-tracker","combat-tracker","d&d","5e"
+  ],
+  "author": "Camille Hodoul <camille.hodoul@gmail.com> (http://twitter.com/Eartz_HC)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/camille-hdl/initiative-rocks/issues"
+  },
+  "homepage": "https://github.com/camille-hdl/initiative-rocks#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.3.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.3.1",
+    "cypress": "^3.1.5",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.2.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-flowtype": "^3.6.1",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-react-hooks": "^1.6.0",
+    "flow-bin": "^0.94.0",
+    "jest": "^24.3.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.17.0",
+    "rollup": "^1.6.0",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-clear": "^2.0.7",
+    "rollup-plugin-commonjs": "^9.2.1",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-replace": "^2.1.0",
+    "rollup-plugin-terser": "^4.0.4",
+    "serve": "^10.1.2",
+    "start-server-and-test": "^1.7.11",
+    "workbox-cli": "^4.1.0"
+  },
+  "dependencies": {
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
+  },
+  "jest": {
+    "verbose": true,
+    "testRegex": "(/__tests__/.*|\\.(test|spec|react-test))\\.(js|jsx)$",
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "globals": {
+      "NODE_ENV": "test"
+    },
+    "testPathIgnorePatterns": [
+      "node_modules"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native|my-project|react-native-button)/"
+    ]
+  }
+}
