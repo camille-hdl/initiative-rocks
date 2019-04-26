@@ -10,24 +10,26 @@ const DynamicComponent = lazy(() => import("./dynamic-component.jsx"));
  */
 const App = () => {
     const [componentLoaded, loadComponent] = useState(false);
-    return <main>
-        <h1>React rollup example</h1>
-        {
-            componentLoaded ? (
+    return (
+        <main>
+            <h1>React rollup example</h1>
+            {componentLoaded ? (
                 <Suspense fallback={<div>Loading ...</div>}>
                     <DynamicComponent />
                 </Suspense>
             ) : (
-                <button data-cy="btn-load-component" onClick={() => {
-                    loadComponent(true);
-                }}>Load component</button>
-            )
-        }
-        <p>{helloName("World")}</p>
-    </main>;
-}
+                <button
+                    data-cy="btn-load-component"
+                    onClick={() => {
+                        loadComponent(true);
+                    }}
+                >
+                    Load component
+                </button>
+            )}
+            <p>{helloName("World")}</p>
+        </main>
+    );
+};
 
-ReactDOM.render(
-    <App />,
-    document.getElementById("app-container")
-);
+ReactDOM.render(<App />, document.getElementById("app-container"));

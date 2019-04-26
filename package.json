@@ -23,7 +23,10 @@
     "url": "git+https://github.com/camille-hdl/initiative-rocks.git"
   },
   "keywords": [
-    "initiative-tracker","combat-tracker","d&d","5e"
+    "initiative-tracker",
+    "combat-tracker",
+    "d&d",
+    "5e"
   ],
   "author": "Camille Hodoul <camille.hodoul@gmail.com> (http://twitter.com/Eartz_HC)",
   "license": "MIT",
@@ -69,8 +72,16 @@
     "workbox-cli": "^4.1.0"
   },
   "dependencies": {
+    "@material-ui/core": "^3.9.3",
+    "immutable": "^4.0.0-rc.12",
+    "ramda": "^0.26.1",
     "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "react-dom": "^16.8.4",
+    "react-redux": "^7.0.2",
+    "react-router-dom": "^5.0.0",
+    "react-use": "^8.2.0",
+    "redux": "^4.0.1",
+    "reselect": "^4.0.0"
   },
   "jest": {
     "verbose": true,
