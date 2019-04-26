@@ -1,35 +1,38 @@
 //@flow
-import React, { lazy, Suspense, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import { helloName } from "./lib.js";
-const DynamicComponent = lazy(() => import("./dynamic-component.jsx"));
 
-/**
- * When the button is clicked, `DynamicComponent` will have to be rendered for the first time,
- * and will be loaded in the browser.
- */
-const App = () => {
-    const [componentLoaded, loadComponent] = useState(false);
-    return (
-        <main>
-            <h1>React rollup example</h1>
-            {componentLoaded ? (
-                <Suspense fallback={<div>Loading ...</div>}>
-                    <DynamicComponent />
-                </Suspense>
-            ) : (
-                <button
-                    data-cy="btn-load-component"
-                    onClick={() => {
-                        loadComponent(true);
-                    }}
-                >
-                    Load component
-                </button>
-            )}
-            <p>{helloName("World")}</p>
-        </main>
-    );
+import { AppContainer } from "./container.jsx";
+
+import App from "./reducers/reducer.js";
+import { fromJS } from "immutable";
+import { createStore, applyMiddleware, compose } from "redux";
+import { BrowserRouter } from "react-router-dom";
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+import { version } from "../package.json";
+
+export const getInitialState = () => {
+    return {
+        version: version,
+        theme: "dark",
+        encounter: {
+            creatures: [],
+            initiativeToken: 0,
+            round: 1,
+        },
+        savedCreatures: [],
+    };
 };
 
-ReactDOM.render(<App />, document.getElementById("app-container"));
+ReactDOM.render(
+    <BrowserRouter>
+        <AppContainer
+            store={createStore(
+                App,
+                fromJS(getInitialState()),
+                window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+            )}
+        />
+    </BrowserRouter>,
+    document.getElementById("app-container")
+);
