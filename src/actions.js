@@ -4,6 +4,7 @@ export const SET_ENCOUNTER = "SET_ENCOUNTER";
 export const UPDATE_CREATURE = "UPDATE_CREATURE";
 export const REMOVE_CREATURE = "REMOVE_CREATURE";
 export const SAVE_CREATURE = "SAVE_CREATURE";
+export const UNSAVE_CREATURE = "UNSAVE_CREATURE";
 
 type ReduxAction = { type: string, data: any };
 import type { Map, List } from "immutable";
@@ -24,4 +25,7 @@ export const removeCreature = (creature: Map): ReduxAction => {
 };
 export const saveCreature = (creature: Map): ReduxAction => {
     return { type: SAVE_CREATURE, data: creature };
+};
+export const unsaveCreature = (creature: Map): ReduxAction => {
+    return { type: UNSAVE_CREATURE, data: creature };
 };

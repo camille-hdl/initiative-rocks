@@ -19,6 +19,7 @@ export type Props = {
     updateCreature: (creature: Map) => void,
     removeCreature: (creature: Map) => void,
     saveCreature: (creature: Map) => void,
+    unsaveCreature: (creature: Map) => void,
 } & RouteProps;
 
 type RouteProps = {

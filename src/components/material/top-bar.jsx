@@ -1,20 +1,32 @@
 //@flow
-import React from "react";
+import React, { useState } from "react";
 
+import { map } from "ramda";
+import { Map, List as ImmutableList } from "immutable";
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
+import Divider from "@material-ui/core/Divider";
+import Button from "@material-ui/core/Button";
 import MenuIcon from "@material-ui/icons/Menu";
 import useNetwork from "react-use/lib/useNetwork";
 import WifiIcon from "@material-ui/icons/Wifi";
+import DeleteIcon from "@material-ui/icons/Delete";
 import WifiOffIcon from "@material-ui/icons/WifiOff";
-import BrightnessLowIcon from "@material-ui/icons/BrightnessLow";
 import BrightnessMediumIcon from "@material-ui/icons/BrightnessMedium";
 import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import List from "@material-ui/core/List";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const styles = {
     grow: {
@@ -36,51 +48,143 @@ const styles = {
         fontFamily: "Rock Salt, Cursive",
         textDecoration: "none",
     },
+    drawerListDesktop: {
+        width: "500px",
+    },
 };
 type Props = {
     version: string,
     classes: any,
     encounter: Map,
     theme: "light" | "dark",
+    savedCreatures: ImmutableList,
     setTheme: (theme: "light" | "dark") => void,
+    setEncounter: (encounter: Map) => void,
+    unsaveCreature: (creature: Map) => void,
 };
+
+/**
+ * App bar and left drawer (settings, saved creatures ...)
+ */
 function TopBar(props: Props) {
     const { version, classes } = props;
     const networkState = useNetwork();
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
     const toggleTheme = (curTheme: "light" | "dark"): "light" | "dark" => {
         props.setTheme(curTheme === "light" ? "dark" : "light");
     };
     return (
-        <AppBar position="static">
-            <Toolbar>
-                <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                    <MenuIcon />
-                </IconButton>
-                <Typography component="h1" variant="h6" color="inherit" className={classes.title}>
-                    {"Initiative Rocks!"}
-                </Typography>
-                <Typography component="span" variant="body1" color="inherit" className={classes.round}>
-                    Round <span className={classes.roundNumber}>{props.encounter.get("round")}</span>
-                </Typography>
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={props.theme === "dark"}
-                            onChange={() => toggleTheme(props.theme)}
-                            value={props.theme}
+        <>
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton
+                        className={classes.menuButton}
+                        color="inherit"
+                        aria-label="Menu"
+                        onClick={() => setDrawerOpen(!drawerOpen)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}>
+                        {"Initiative Rocks!"}
+                    </Typography>
+                    <Typography component="span" variant="body1" color="inherit" className={classes.round}>
+                        Round{" "}
+                        <Tooltip title="Reset">
+                            <Button
+                                onClick={() => {
+                                    props.setEncounter(props.encounter.set("round", 1).set("initiativeToken", 0));
+                                }}
+                                className={classes.roundNumber}
+                            >
+                                {props.encounter.get("round")}
+                            </Button>
+                        </Tooltip>
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+            <SwipeableDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} onOpen={() => setDrawerOpen(true)}>
+                <List className={classes.drawerListDesktop} subheader={<ListSubheader>Settings</ListSubheader>}>
+                    <ListItem button onClick={() => toggleTheme(props.theme)}>
+                        <ListItemIcon>
+                            <BrightnessMediumIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Light/Dark mode" />
+                        <ListItemSecondaryAction>
+                            <Switch
+                                checked={props.theme === "dark"}
+                                onChange={e => {
+                                    e.stopPropagation();
+                                    toggleTheme(props.theme);
+                                }}
+                                value={props.theme}
+                            />
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                </List>
+                <Divider />
+                <List className={classes.drawerListDesktop} subheader={<ListSubheader>Saved creatures</ListSubheader>}>
+                    {map(
+                        creature => (
+                            <ListItem
+                                aria-label="Add to the encounter"
+                                key={creature.get("id")}
+                                button
+                                onClick={() => {
+                                    props.setEncounter(
+                                        props.encounter.update("creatures", creatures =>
+                                            creatures.push(creature.set("id", "" + Math.random()))
+                                        )
+                                    );
+                                }}
+                            >
+                                <ListItemAvatar>
+                                    <Avatar>{creature.get("type")}</Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary={creature.get("name") || "(no name)"} />
+                                <ListItemSecondaryAction>
+                                    <IconButton
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            props.unsaveCreature(creature);
+                                        }}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        ),
+                        props.savedCreatures.toArray()
+                    )}
+                    {props.savedCreatures.size <= 0 ? (
+                        <ListItem>
+                            <ListItemText primary={"Nothing here"} />
+                        </ListItem>
+                    ) : null}
+                </List>
+                <Divider />
+                <List className={classes.drawerListDesktop}>
+                    <ListItem>
+                        <ListItemText primary={networkState.online ? <WifiIcon /> : <WifiOffIcon />} />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemText primary={`Version: ${version}`} />
+                        <ListItemText
+                            secondary={
+                                <Button
+                                    target="_blank"
+                                    rel="noopener"
+                                    href="https://github.com/camille-hdl/initiative-rocks"
+                                >
+                                    github
+                                </Button>
+                            }
                         />
-                    }
-                    label={<BrightnessMediumIcon />}
-                />
-                <Typography variant="body1" color="inherit">
-                    <span title={networkState.online ? "You are online" : "You are offline"}>
-                        {networkState.online ? <WifiIcon /> : <WifiOffIcon />}
-                    </span>{" "}
-                    - version: {version}
-                </Typography>
-            </Toolbar>
-        </AppBar>
+                    </ListItem>
+                </List>
+            </SwipeableDrawer>
+        </>
     );
 }
 

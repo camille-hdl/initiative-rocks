@@ -26,11 +26,10 @@ const styles = theme => ({
         marginRight: theme.spacing.unit,
         width: 200,
     },
-    dense: {
-        marginTop: 19,
-    },
-    menu: {
-        width: 200,
+    textFieldFull: {
+        width: "100%",
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
     },
 });
 type Props = {
@@ -52,9 +51,14 @@ function CreatureForm(props: Props) {
     const handleChangeBool = (prop: string, transformer?: (val: any) => any = identity) => ev =>
         updateCreature(creature.set(prop, transformer(ev.target.checked)));
     const isMultiple = creature.get("type") === "😈" && creature.get("multiple");
+
+    /**
+     * If we need the third col or not
+     */
+    const smCols = creature.get("type") === "😈" ? 4 : 6;
     return (
         <Grid container spacing={24}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={smCols}>
                 <form noValidate autoComplete="off">
                     <FormControl className={classes.textField}>
                         <TextField
@@ -101,7 +105,18 @@ function CreatureForm(props: Props) {
                     </FormControl>
                 </form>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={smCols}>
+                <FormControl className={classes.textFieldFull}>
+                    <TextField
+                        label="Notes"
+                        value={creature.get("notes")}
+                        onChange={handleChange("notes")}
+                        margin="normal"
+                        multiline
+                    />
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={smCols}>
                 {creature.get("type") === "😈" ? (
                     <FormControl className={classes.textField}>
                         <FormControlLabel
