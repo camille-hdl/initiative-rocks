@@ -13,34 +13,7 @@ import { map as _map, addIndex } from "ramda";
 import Creature from "../material/creature-foldable.jsx";
 
 const map = addIndex(_map);
-
-const getNewInstance = () => {
-    return {
-        events: [],
-        tags: [],
-    };
-};
-
-/**
- * Creates a new creature with default values
- */
-const getNewCreature = () => {
-    return {
-        name: "",
-        initiative: null,
-        hp: null,
-        instances: [getNewInstance()],
-        multiple: false,
-        ac: "",
-        tags: [],
-        notes: "",
-        link: "",
-        dndAPIData: null,
-        type: "monster",
-        expanded: true,
-        id: "c" + Math.random(),
-    };
-};
+import { getNewCreature } from "../../lib/creatures.js";
 
 const styles = theme => ({
     fab: {
@@ -67,7 +40,7 @@ const styles = theme => ({
  * manages the turn order
  */
 function Encounter(props: Props & { classes: any }) {
-    const { classes, encounter, setEncounter, initiativeOrder, updateCreature } = props;
+    const { classes, encounter, setEncounter, initiativeOrder, updateCreature, removeCreature, saveCreature } = props;
     const initiativeToken = encounter.get("initiativeToken");
     const creatureList = useMemo(() => {
         return map((creature: Map, index: number) => {
@@ -77,11 +50,13 @@ function Encounter(props: Props & { classes: any }) {
                     creature={creature}
                     isCurrentTurn={isCurrentTurn}
                     updateCreature={updateCreature}
+                    removeCreature={removeCreature}
+                    saveCreature={saveCreature}
                     key={creature.get("id")}
                 />
             );
         }, initiativeOrder.toArray());
-    }, [initiativeToken, initiativeOrder, updateCreature]);
+    }, [initiativeToken, initiativeOrder, updateCreature, removeCreature, saveCreature]);
     /**
      * If there is a creature below in the initiative order, we proceed.
      * Otherwise, we go to the next round

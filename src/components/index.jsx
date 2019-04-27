@@ -17,6 +17,8 @@ export type Props = {
     setTheme: (theme: "light" | "dark") => void,
     setEncounter: (encounter: Map) => void,
     updateCreature: (creature: Map) => void,
+    removeCreature: (creature: Map) => void,
+    saveCreature: (creature: Map) => void,
 } & RouteProps;
 
 type RouteProps = {
