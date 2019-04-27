@@ -110,6 +110,8 @@ function Encounter(props: Props & { classes: any }) {
                                             <li>{"Save creatures for later use"}</li>
                                             <li>{"Works offline"}</li>
                                         </ul>
+                                        <br />
+                                        {`If you want to help me improve this app, please enable data collection in the settings.`}
                                     </Typography>
                                 </Paper>
                                 <Paper elevation={1} className={classes.welcomeMessage}>

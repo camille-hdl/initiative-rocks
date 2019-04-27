@@ -156,7 +156,7 @@ function TopBar(props: Props) {
                         button
                         onClick={() => setAnalyticsEnabled(!analyticsEnabled)}
                     >
-                        <ListItemText primary="Anonymous usage data collection" secondary="Helps me improve this app" />
+                        <ListItemText primary="Collect anonymous usage data" secondary="Help me improve this app!" />
                         <ListItemSecondaryAction>
                             <Switch
                                 checked={analyticsEnabled}
