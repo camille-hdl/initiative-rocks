@@ -85,6 +85,7 @@ function Encounter(props: Props & { classes: any }) {
                             <Grid item xs={12} sm={6}>
                                 <Paper elevation={1} className={classes.welcomeMessage}>
                                     <Typography
+                                        data-cy="welcome-message"
                                         component="p"
                                         onClick={() => {
                                             props.setEncounter(
@@ -107,6 +108,7 @@ function Encounter(props: Props & { classes: any }) {
                     color="secondary"
                     aria-label="Add a creature"
                     className={classes.fab}
+                    data-cy="add-creature-fab"
                     onClick={() => {
                         props.setEncounter(
                             props.encounter.update("creatures", creatures => creatures.push(fromJS(getNewCreature())))
@@ -119,6 +121,7 @@ function Encounter(props: Props & { classes: any }) {
                     variant="extended"
                     color="primary"
                     aria-label="Next turn"
+                    data-cy="nex-turn-fab"
                     className={classes.fab}
                     onClick={() => nextTurn()}
                 >

@@ -41,7 +41,7 @@ function CreatureInstances(props: Props) {
     const { classes, creature, updateCreature } = props;
 
     return (
-        <List dense className={classes.root}>
+        <List dense className={classes.root} data-cy="instances-list">
             {map(
                 (value: Map, index: number) => (
                     <ListItem key={index}>

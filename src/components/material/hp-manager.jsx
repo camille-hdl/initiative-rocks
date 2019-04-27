@@ -94,6 +94,7 @@ function HpManager(props: Props) {
     return (
         <>
             <Button
+                data-cy="hp-manager-toggle"
                 variant="outlined"
                 className={classes[getButtonClass(creature.get("hp"), currentHP)]}
                 onClick={e => {
@@ -105,13 +106,14 @@ function HpManager(props: Props) {
                 {currentHP <= 0 ? " 💀" : null}
             </Button>
             <Modal open={open} onClick={e => e.stopPropagation()} onClose={() => setOpen(false)}>
-                <div className={classes.paper}>
-                    <Typography variant="h6" id="amount">
+                <div className={classes.paper} data-cy="hp-manager-modal">
+                    <Typography variant="h6" id="amount" data-cy="hp-manager-amount">
                         {amount}
                     </Typography>
-                    <TextField label="Amount" value={expr} onChange={e => setExpr(e.target.value)} margin="normal" />
+                    <TextField data-cy="hp-manager-input" label="Amount" value={expr} onChange={e => setExpr(e.target.value)} margin="normal" />
                     <div>
                         <Button
+                            data-cy="hp-manager-damage"
                             onClick={() => {
                                 if (amount === 0) return;
                                 setExpr("");
@@ -124,6 +126,7 @@ function HpManager(props: Props) {
                             </span>
                         </Button>
                         <Button
+                            data-cy="hp-manager-healing"
                             onClick={() => {
                                 if (amount === 0) return;
                                 setExpr("");

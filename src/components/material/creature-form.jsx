@@ -57,11 +57,12 @@ function CreatureForm(props: Props) {
      */
     const smCols = creature.get("type") === "😈" ? 4 : 6;
     return (
-        <Grid container spacing={24}>
+        <Grid container spacing={24} data-cy="creature-form">
             <Grid item xs={12} sm={smCols}>
                 <form noValidate autoComplete="off">
                     <FormControl className={classes.textField}>
                         <TextField
+                            data-cy="creature-name"
                             label="Creature name"
                             value={creature.get("name")}
                             onChange={handleChange("name")}
@@ -70,6 +71,7 @@ function CreatureForm(props: Props) {
                     </FormControl>
                     <FormControl className={classes.textField}>
                         <TextField
+                            data-cy="creature-init"
                             label="Initiative"
                             value={isNaN(creature.get("initiative")) ? "" : creature.get("initiative")}
                             onChange={handleChange("initiative", v => (isNaN(v) ? null : +v))}
@@ -79,6 +81,7 @@ function CreatureForm(props: Props) {
                     </FormControl>
                     <FormControl className={classes.textField}>
                         <TextField
+                            data-cy="creature-max-hp"
                             label="Max HP"
                             value={isNaN(creature.get("hp")) ? "" : creature.get("hp")}
                             onChange={handleChange("hp", v => (isNaN(v) ? null : +v))}
@@ -89,6 +92,7 @@ function CreatureForm(props: Props) {
                     <FormControl className={classes.textField}>
                         <InputLabel htmlFor="creature-type">NPC or PC</InputLabel>
                         <Select
+                            data-cy="creature-type"
                             value={creature.get("type")}
                             onChange={handleChange("type", v => (isAllowedType(v) ? v : head(allowedCreatureTypes)))}
                             input={<Input name="age" id="creature-type" />}
@@ -108,6 +112,7 @@ function CreatureForm(props: Props) {
             <Grid item xs={12} sm={smCols}>
                 <FormControl className={classes.textFieldFull}>
                     <TextField
+                        data-cy="creature-notes"
                         label="Notes"
                         value={creature.get("notes")}
                         onChange={handleChange("notes")}
@@ -122,6 +127,7 @@ function CreatureForm(props: Props) {
                         <FormControlLabel
                             control={
                                 <Switch
+                                    data-cy="toggle-multiple"
                                     checked={creature.get("multiple")}
                                     onChange={handleChangeBool("multiple", v => !!v)}
                                     value={creature.get("multiple")}

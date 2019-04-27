@@ -69,11 +69,12 @@ function CreatureFoldable(props: Props) {
     }, [creature]);
     return (
         <ExpansionPanel
+            data-cy="creature"
             color={isCurrentTurn ? "primary" : null}
             expanded={creature.get("expanded")}
             onChange={() => updateCreature(creature.update("expanded", e => !e))}
         >
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <ExpansionPanelSummary data-cy="creature-summary" expandIcon={<ExpandMoreIcon />}>
                 <div className={classes.initiative}>
                     <Badge
                         invisible={!isCurrentTurn}
@@ -81,13 +82,15 @@ function CreatureFoldable(props: Props) {
                         badgeContent={"🎲"}
                         color="secondary"
                     >
-                        <Avatar className={classes.initScore}>{creature.get("initiative")}</Avatar>
+                        <Avatar data-cy="initiative" className={classes.initScore}>
+                            {creature.get("initiative")}
+                        </Avatar>
                     </Badge>
                 </div>
-                <Typography className={classes.heading}>
+                <Typography data-cy="creature-name-display" className={classes.heading}>
                     {creature.get("type")} {creature.get("name") || "(New creature)"}
                 </Typography>
-                <div className={classes.secondaryInfos}>
+                <div className={classes.secondaryInfos} data-cy="creature-hp-display">
                     {isMultiple ? (
                         <Typography>{`${aliveInstances.size} / ${creature.get("instances").size} alive`}</Typography>
                     ) : creature.get("hp") ? (
@@ -107,10 +110,10 @@ function CreatureFoldable(props: Props) {
                 <CreatureForm creature={creature} updateCreature={updateCreature} />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-                <IconButton aria-label="Delete" onClick={() => removeCreature(creature)}>
+                <IconButton data-cy="delete-creature-btn" aria-label="Delete" onClick={() => removeCreature(creature)}>
                     <DeleteIcon />
                 </IconButton>
-                <IconButton aria-label="Save" onClick={() => saveCreature(creature)}>
+                <IconButton data-cy="save-creature-btn" aria-label="Save" onClick={() => saveCreature(creature)}>
                     <SaveIcon />
                 </IconButton>
             </ExpansionPanelActions>

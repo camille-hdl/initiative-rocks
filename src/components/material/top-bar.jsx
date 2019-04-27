@@ -79,6 +79,7 @@ function TopBar(props: Props) {
             <AppBar position="static">
                 <Toolbar>
                     <IconButton
+                        data-cy="toggle-drawer-btn"
                         className={classes.menuButton}
                         color="inherit"
                         aria-label="Menu"
@@ -93,6 +94,7 @@ function TopBar(props: Props) {
                         Round{" "}
                         <Tooltip title="Reset">
                             <Button
+                                data-cy="reset-rounds-btn"
                                 onClick={() => {
                                     props.setEncounter(props.encounter.set("round", 1).set("initiativeToken", 0));
                                 }}
@@ -106,7 +108,7 @@ function TopBar(props: Props) {
             </AppBar>
             <SwipeableDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} onOpen={() => setDrawerOpen(true)}>
                 <List className={classes.drawerListDesktop} subheader={<ListSubheader>Settings</ListSubheader>}>
-                    <ListItem button onClick={() => toggleTheme(props.theme)}>
+                    <ListItem data-cy="settings-theme" button onClick={() => toggleTheme(props.theme)}>
                         <ListItemIcon>
                             <BrightnessMediumIcon />
                         </ListItemIcon>
@@ -124,7 +126,11 @@ function TopBar(props: Props) {
                     </ListItem>
                 </List>
                 <Divider />
-                <List className={classes.drawerListDesktop} subheader={<ListSubheader>Saved creatures</ListSubheader>}>
+                <List
+                    className={classes.drawerListDesktop}
+                    subheader={<ListSubheader>Saved creatures</ListSubheader>}
+                    data-cy="saved-creatures-list"
+                >
                     {map(
                         creature => (
                             <ListItem
