@@ -11,6 +11,7 @@ import type { Props } from "../index.jsx";
 import { fromJS, Map } from "immutable";
 import { map as _map, addIndex } from "ramda";
 import Creature from "../material/creature-foldable.jsx";
+import Link from "@material-ui/core/Link";
 
 const map = addIndex(_map);
 import { getNewCreature } from "../../lib/creatures.js";
@@ -100,6 +101,18 @@ function Encounter(props: Props & { classes: any }) {
                         <Grid container direction="row" justify="center" alignItems="center">
                             <Grid item xs={12} sm={6}>
                                 <Paper elevation={1} className={classes.welcomeMessage}>
+                                    <Typography data-cy="welcome-message-2" component="p">
+                                        {"This is a simple combat tracker for D&D."}
+                                        <br />
+                                        <ul>
+                                            <li>{"Track rounds, turn order and HP"}</li>
+                                            <li>{"Manage groups of creatures"}</li>
+                                            <li>{"Save creatures for later use"}</li>
+                                            <li>{"Works offline"}</li>
+                                        </ul>
+                                    </Typography>
+                                </Paper>
+                                <Paper elevation={1} className={classes.welcomeMessage}>
                                     <Typography
                                         data-cy="welcome-message"
                                         component="p"
@@ -118,6 +131,22 @@ function Encounter(props: Props & { classes: any }) {
                                         }}
                                     >
                                         {"Start by adding creatures! Click on the '+' button below"}
+                                    </Typography>
+                                </Paper>
+                                <Paper elevation={1} className={classes.welcomeMessage}>
+                                    <Typography data-cy="welcome-message-2" component="p">
+                                        {"This app is a "}
+                                        <Link
+                                            href="https://en.wikipedia.org/wiki/Progressive_web_applications"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            color="inherit"
+                                        >
+                                            {"Progressive Web Application"}
+                                        </Link>
+                                        {"."}
+                                        <br />
+                                        {"If your browser supports it, you can install it."}
                                     </Typography>
                                 </Paper>
                             </Grid>
