@@ -110,10 +110,36 @@ function CreatureFoldable(props: Props) {
                 <CreatureForm creature={creature} updateCreature={updateCreature} />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-                <IconButton data-cy="delete-creature-btn" aria-label="Delete" onClick={() => removeCreature(creature)}>
+                <IconButton
+                    data-cy="delete-creature-btn"
+                    aria-label="Delete"
+                    onClick={() => {
+                        removeCreature(creature);
+                        if (window.myAnalytics) {
+                            window.myAnalytics.event({
+                                eventCategory: "encounter",
+                                eventAction: "remove_creature",
+                                eventLabel: creature.get("type"),
+                            });
+                        }
+                    }}
+                >
                     <DeleteIcon />
                 </IconButton>
-                <IconButton data-cy="save-creature-btn" aria-label="Save" onClick={() => saveCreature(creature)}>
+                <IconButton
+                    data-cy="save-creature-btn"
+                    aria-label="Save"
+                    onClick={() => {
+                        saveCreature(creature);
+                        if (window.myAnalytics) {
+                            window.myAnalytics.event({
+                                eventCategory: "others",
+                                eventAction: "save_creature",
+                                eventLabel: creature.get("type"),
+                            });
+                        }
+                    }}
+                >
                     <SaveIcon />
                 </IconButton>
             </ExpansionPanelActions>

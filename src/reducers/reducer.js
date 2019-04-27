@@ -8,6 +8,7 @@ import {
     SAVE_CREATURE,
     UNSAVE_CREATURE,
 } from "../actions.js";
+import { createDebounced } from "../lib/state-storage.js";
 
 /**
  * Update a creature in the encounter
@@ -52,6 +53,9 @@ const reducersMap: { [actionType: string]: Reducer } = {
     [SAVE_CREATURE]: saveCreatureReducer,
     [UNSAVE_CREATURE]: unsaveCreatureReducer,
 };
+const stateSaver = createDebounced(1000);
 export default function App(state: Map, action: { type: string, data: any }) {
-    return typeof reducersMap[action.type] === "function" ? reducersMap[action.type](state, action.data) : state;
+    const newState = typeof reducersMap[action.type] === "function" ? reducersMap[action.type](state, action.data) : state;
+    stateSaver(newState); // SIDE EFFECT
+    return newState;
 }

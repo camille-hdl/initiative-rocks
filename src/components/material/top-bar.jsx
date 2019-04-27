@@ -27,6 +27,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Tooltip from "@material-ui/core/Tooltip";
+import useAnalytics from "../../analytics/use-analytics.js";
 
 const styles = {
     grow: {
@@ -70,9 +71,24 @@ function TopBar(props: Props) {
     const { version, classes } = props;
     const networkState = useNetwork();
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [analyticsEnabled, setAnalyticsEnabled] = useAnalytics({
+        gaConfig: {
+            UA: "ANALYTICS_ID",
+        },
+    });
+    if (typeof window.myAnalytics === "undefined") {
+        throw new Error("myAnalytics is missing");
+    }
 
     const toggleTheme = (curTheme: "light" | "dark"): "light" | "dark" => {
         props.setTheme(curTheme === "light" ? "dark" : "light");
+        if (window.myAnalytics) {
+            window.myAnalytics.event({
+                eventCategory: "settings",
+                eventAction: "theme",
+                eventLabel: curTheme === "light" ? "dark" : "light",
+            });
+        }
     };
     return (
         <>
@@ -83,7 +99,15 @@ function TopBar(props: Props) {
                         className={classes.menuButton}
                         color="inherit"
                         aria-label="Menu"
-                        onClick={() => setDrawerOpen(!drawerOpen)}
+                        onClick={() => {
+                            setDrawerOpen(!drawerOpen);
+                            if (window.myAnalytics) {
+                                window.myAnalytics.event({
+                                    eventCategory: "settings",
+                                    eventAction: "open_drawer",
+                                });
+                            }
+                        }}
                     >
                         <MenuIcon />
                     </IconButton>
@@ -121,6 +145,23 @@ function TopBar(props: Props) {
                                     toggleTheme(props.theme);
                                 }}
                                 value={props.theme}
+                            />
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                    <ListItem
+                        data-cy="settings-analytics"
+                        button
+                        onClick={() => setAnalyticsEnabled(!analyticsEnabled)}
+                    >
+                        <ListItemText primary="Anonymous data collection" />
+                        <ListItemSecondaryAction>
+                            <Switch
+                                checked={analyticsEnabled}
+                                onChange={e => {
+                                    e.stopPropagation();
+                                    setAnalyticsEnabled(!analyticsEnabled);
+                                }}
+                                value={!!analyticsEnabled}
                             />
                         </ListItemSecondaryAction>
                     </ListItem>
@@ -175,6 +216,21 @@ function TopBar(props: Props) {
                         <ListItemText primary={networkState.online ? <WifiIcon /> : <WifiOffIcon />} />
                     </ListItem>
                     <ListItem>
+                        <ListItemText primary={"Clear encounter"} />
+                        <ListItemText
+                            secondary={
+                                <Button
+                                    data-cy="clear-encounter-btn"
+                                    onClick={() => {
+                                        props.setEncounter(props.encounter.set("creatures", ImmutableList([])));
+                                    }}
+                                >
+                                    github
+                                </Button>
+                            }
+                        />
+                    </ListItem>
+                    <ListItem>
                         <ListItemText primary={`Version: ${version}`} />
                         <ListItemText
                             secondary={
@@ -189,6 +245,7 @@ function TopBar(props: Props) {
                         />
                     </ListItem>
                 </List>
+                <Divider />
             </SwipeableDrawer>
         </>
     );

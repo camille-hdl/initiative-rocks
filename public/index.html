@@ -6,6 +6,30 @@
         <title>Initiative Rocks!</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
         <link href="https://fonts.googleapis.com/css?family=Rock+Salt" rel="stylesheet">
+        <script>
+            window.__TRACKING_CONSENT_COOKIE_NAME__ = "myAnalytics_consent";
+        
+            window.myAnalytics || (window.myAnalytics = []);
+            window.myAnalytics.methods = ['page', 'pageView', 'event'];
+            window.myAnalytics.factory = function(method) {
+                return function() {
+                    var args = Array.prototype.slice.call(arguments);
+                    args.unshift(method);
+                    window.myAnalytics.push(args);
+                    return window.myAnalytics;
+                };
+            };
+            for (var i = 0; i < window.myAnalytics.methods.length; i++) {
+                var method = window.myAnalytics.methods[i];
+                window.myAnalytics[method] = window.myAnalytics.factory(method);
+            }
+        </script>
+        <script>
+            if (window.myAnalytics) {
+                window.myAnalytics.page();
+                window.myAnalytics.pageView();
+            }
+        </script>
     </head>
     <body>
         <script type="module">

@@ -68,11 +68,27 @@ function Encounter(props: Props & { classes: any }) {
             props.setEncounter(
                 props.encounter.update(encounter => encounter.update("initiativeToken", token => token + 1))
             );
+            if (window.myAnalytics) {
+                window.myAnalytics.event({
+                    eventCategory: "encounter",
+                    eventAction: "next_turn",
+                });
+            }
         } else {
             //next round
             props.setEncounter(
                 props.encounter.update(encounter => encounter.set("initiativeToken", 0).update("round", r => r + 1))
             );
+            if (window.myAnalytics) {
+                window.myAnalytics.event({
+                    eventCategory: "encounter",
+                    eventAction: "next_turn",
+                });
+                window.myAnalytics.event({
+                    eventCategory: "encounter",
+                    eventAction: "next_round",
+                });
+            }
         }
     };
     return (
@@ -93,6 +109,12 @@ function Encounter(props: Props & { classes: any }) {
                                                     creatures.push(fromJS(getNewCreature()))
                                                 )
                                             );
+                                            if (window.myAnalytics) {
+                                                window.myAnalytics.event({
+                                                    eventCategory: "encounter",
+                                                    eventAction: "add_creature",
+                                                });
+                                            }
                                         }}
                                     >
                                         {"Start by adding creatures! Click on the '+' button below"}
@@ -113,6 +135,12 @@ function Encounter(props: Props & { classes: any }) {
                         props.setEncounter(
                             props.encounter.update("creatures", creatures => creatures.push(fromJS(getNewCreature())))
                         );
+                        if (window.myAnalytics) {
+                            window.myAnalytics.event({
+                                eventCategory: "encounter",
+                                eventAction: "add_creature",
+                            });
+                        }
                     }}
                 >
                     <AddIcon />
@@ -123,7 +151,9 @@ function Encounter(props: Props & { classes: any }) {
                     aria-label="Next turn"
                     data-cy="nex-turn-fab"
                     className={classes.fab}
-                    onClick={() => nextTurn()}
+                    onClick={() => {
+                        nextTurn();
+                    }}
                 >
                     <PlayArrowIcon className={classes.extendedIcon} />
                     Next Turn

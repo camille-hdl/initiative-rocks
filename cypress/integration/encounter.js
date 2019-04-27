@@ -1,7 +1,8 @@
 /* eslint-disable */
 
-describe('Encounter', function () {
+describe('Encounter - creatures', function () {
     beforeEach(() => {
+        window.__DO_NOT_RESTORE_STATE__ = true;
         if (window.navigator && navigator.serviceWorker) {
           navigator.serviceWorker.getRegistrations()
           .then((registrations) => {
@@ -12,7 +13,7 @@ describe('Encounter', function () {
         }
       })
     it("Add a creature to the encounter, deal damage", function () {
-        
+        cy.clearLocalStorage();
         cy.visit('/');
         cy.get("h1").should("contain", "Initiative Rocks!");
         cy.get("[data-cy=welcome-message]").should("exist");
@@ -35,10 +36,29 @@ describe('Encounter', function () {
         cy.get("[data-cy=hp-manager-damage]").click();
         cy.get("[data-cy=hp-manager-modal]").should("not.be.visible");
         cy.get("[data-cy=creature-hp-display]").should("contain", "36 / 50");
+        cy.get("[data-cy=creature-name-display]").click();
+        cy.get("[data-cy=delete-creature-btn]").click();
+        cy.get("[data-cy=toggle-drawer-btn]").click();
+        cy.get("[data-cy=clear-encounter-btn]").click();
+        cy.wait(1000);
     });
 
+});
+describe('Encounter - rounds', function () {
+    beforeEach(() => {
+      window.__DO_NOT_RESTORE_STATE__ = true;
+        if (window.navigator && navigator.serviceWorker) {
+          navigator.serviceWorker.getRegistrations()
+          .then((registrations) => {
+            registrations.forEach((registration) => {
+              registration.unregister()
+            })
+          })
+        }
+      })
+
     it("Add 2 creatures to the encounter, advance rounds", function () {
-        
+        cy.clearLocalStorage();
         cy.visit('/');
 
         cy.get("[data-cy=add-creature-fab").click();
@@ -61,29 +81,52 @@ describe('Encounter', function () {
         cy.get("[data-cy=reset-rounds-btn]").should("contain", "2");
         cy.get("[data-cy=reset-rounds-btn]").click();
         cy.get("[data-cy=reset-rounds-btn]").should("contain", "1");
-    });
-
-    it("Display left drawer, save creature, remove then re-add it", function () {
-        cy.visit('/');
-        cy.get("[data-cy=settings-theme]").should("not.be.visible");
+        cy.get("[data-cy=delete-creature-btn]").first().click();
+        cy.get("[data-cy=creature-name-display]").first().click();
+        cy.get("[data-cy=delete-creature-btn]").click();
+        cy.get("[data-cy=welcome-message]").should("exist");
         cy.get("[data-cy=toggle-drawer-btn]").click();
-        cy.get("[data-cy=settings-theme]").should("be.visible");
-
-        cy.get("[data-cy=saved-creatures-list]").should("contain", "Nothing here");
-        // FIXME: can't close the drawer in cypress because classes are changing every time...
-        // cy.get("body").type("{esc}");
-        // cy.get("[data-cy=settings-theme]").should("not.be.visible");
-
-        // cy.get("[data-cy=add-creature-fab]").click();
-        // cy.get("[data-cy=creature-name]").find("input[type=text]").clear().type("My creature1");
-        // cy.get("[data-cy=save-creature-btn]").click();
-        // cy.get("[data-cy=delete-creature-btn]").click();
-        // cy.get("[data-cy=welcome-message]").should("exist");
-
-        // cy.get("[data-cy=toggle-drawer-btn]").click();
-        // cy.get("[data-cy=saved-creatures-list]").should("contain", "My creature1");
-        // cy.get("[data-cy=saved-creatures-list]").find("[role=button]").first().click();
-        // cy.get("body").type("{esc}");
-        // cy.get("[data-cy=welcome-message]").should("not.exist");
+        cy.get("[data-cy=clear-encounter-btn]").click();
+        cy.wait(1000);
     });
+
+});
+describe('Settings', function () {
+  beforeEach(() => {
+    window.__DO_NOT_RESTORE_STATE__ = true;
+      if (window.navigator && navigator.serviceWorker) {
+        navigator.serviceWorker.getRegistrations()
+        .then((registrations) => {
+          registrations.forEach((registration) => {
+            registration.unregister()
+          })
+        })
+      }
+    })
+  it("Display left drawer, save creature, remove then re-add it", function () {
+      cy.clearLocalStorage();
+      cy.visit('/');
+      cy.get("[data-cy=settings-theme]").should("not.be.visible");
+      cy.get("[data-cy=toggle-drawer-btn]").click();
+      cy.get("[data-cy=settings-theme]").should("be.visible");
+
+      cy.get("[data-cy=saved-creatures-list]").should("contain", "Nothing here");
+      // FIXME: can't close the drawer in cypress because classes are changing every time...
+      // cy.get("body").type("{esc}");
+      // cy.get("[data-cy=settings-theme]").should("not.be.visible");
+
+      // cy.get("[data-cy=add-creature-fab]").click();
+      // cy.get("[data-cy=creature-name]").find("input[type=text]").clear().type("My creature1");
+      // cy.get("[data-cy=save-creature-btn]").click();
+      // cy.get("[data-cy=delete-creature-btn]").click();
+      // cy.get("[data-cy=welcome-message]").should("exist");
+
+      // cy.get("[data-cy=toggle-drawer-btn]").click();
+      // cy.get("[data-cy=saved-creatures-list]").should("contain", "My creature1");
+      // cy.get("[data-cy=saved-creatures-list]").find("[role=button]").first().click();
+      // cy.get("body").type("{esc}");
+      // cy.get("[data-cy=welcome-message]").should("not.exist");
+      cy.get("[data-cy=clear-encounter-btn]").click();
+      cy.wait(1000);
+  });
 });

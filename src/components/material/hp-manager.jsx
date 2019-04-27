@@ -110,7 +110,13 @@ function HpManager(props: Props) {
                     <Typography variant="h6" id="amount" data-cy="hp-manager-amount">
                         {amount}
                     </Typography>
-                    <TextField data-cy="hp-manager-input" label="Amount" value={expr} onChange={e => setExpr(e.target.value)} margin="normal" />
+                    <TextField
+                        data-cy="hp-manager-input"
+                        label="Amount"
+                        value={expr}
+                        onChange={e => setExpr(e.target.value)}
+                        margin="normal"
+                    />
                     <div>
                         <Button
                             data-cy="hp-manager-damage"
@@ -119,6 +125,13 @@ function HpManager(props: Props) {
                                 setExpr("");
                                 setOpen(false);
                                 updateInstance(instance.update("events", events => events.push(amount * -1)));
+                                if (window.myAnalytics) {
+                                    window.myAnalytics.event({
+                                        eventCategory: "encounter",
+                                        eventAction: "damage_creature",
+                                        eventLabel: expr,
+                                    });
+                                }
                             }}
                         >
                             <span role="img" aria-label="Damage">
@@ -132,6 +145,13 @@ function HpManager(props: Props) {
                                 setExpr("");
                                 setOpen(false);
                                 updateInstance(instance.update("events", events => events.push(amount)));
+                                if (window.myAnalytics) {
+                                    window.myAnalytics.event({
+                                        eventCategory: "encounter",
+                                        eventAction: "heal_creature",
+                                        eventLabel: expr,
+                                    });
+                                }
                             }}
                         >
                             <span role="img" aria-label="Healing">

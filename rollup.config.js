@@ -8,6 +8,8 @@ import globals from "rollup-plugin-node-globals";
 import clear from "rollup-plugin-clear";
 import json from "rollup-plugin-json";
 
+import * as ANALYTICS from "./analytics.json";
+
 /**
  * Where our output will be written to disk
  */
@@ -29,6 +31,7 @@ const getPluginsConfig = (prod, mini) => {
         }),
         replace({
             "process.env.NODE_ENV": JSON.stringify(prod ? "production" : "development"),
+            "ANALYTICS_ID": ANALYTICS.UA,
         }),
         commonjs({
             include: "node_modules/**",

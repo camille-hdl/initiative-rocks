@@ -89,6 +89,12 @@ function CreatureInstances(props: Props) {
                 button
                 onClick={() => {
                     updateCreature(creature.update("instances", instances => instances.push(fromJS(getNewInstance()))));
+                    if (window.myAnalytics) {
+                        window.myAnalytics.event({
+                            eventCategory: "encounter",
+                            eventAction: "add_instance",
+                        });
+                    }
                 }}
             >
                 <Typography>

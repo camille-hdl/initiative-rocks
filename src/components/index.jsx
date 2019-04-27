@@ -40,13 +40,13 @@ export default function App(props: Props) {
                 type: theme,
                 secondary: {
                     main: "#E40712",
-                    light: "#c1060f",
+                    light: "#EA0F15",
                     dark: "#d70711",
                     contrastText: "#fff"
                 },
                 primary: {
                     main: "#9d0a0e",
-                    light: "#9d0a0e",
+                    light: "#F34045",
                     dark: "#9d0a0e",
                     contrastText: "#fff"
                 }
