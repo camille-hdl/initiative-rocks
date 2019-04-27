@@ -48,7 +48,7 @@ function CreatureInstances(props: Props) {
                         <ListItemAvatar>
                             <Avatar className={classes.instanceNumber}>{index + 1}</Avatar>
                         </ListItemAvatar>
-                        {creature.get("hp") ? (
+                        {creature.get("hp") && creature.get("expanded") ? (
                             <HpManager
                                 creature={creature}
                                 instance={value}
@@ -62,6 +62,7 @@ function CreatureInstances(props: Props) {
 
                         <ListItemSecondaryAction>
                             <IconButton
+                                disabled={creature.get("expanded") ? null : true}
                                 className={classes.button}
                                 aria-label="Delete"
                                 onClick={() => {
@@ -87,6 +88,7 @@ function CreatureInstances(props: Props) {
             <ListItem
                 key={"add-instance"}
                 button
+                disabled={creature.get("expanded") ? null : true}
                 onClick={() => {
                     updateCreature(creature.update("instances", instances => instances.push(fromJS(getNewInstance()))));
                     if (window.myAnalytics) {

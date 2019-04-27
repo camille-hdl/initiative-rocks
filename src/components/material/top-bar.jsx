@@ -49,9 +49,6 @@ const styles = {
         fontFamily: "Rock Salt, Cursive",
         textDecoration: "none",
     },
-    drawerListDesktop: {
-        width: "500px",
-    },
 };
 type Props = {
     version: string,
@@ -114,7 +111,13 @@ function TopBar(props: Props) {
                     <Typography component="h1" variant="h6" color="inherit" className={classes.title}>
                         {"Initiative Rocks!"}
                     </Typography>
-                    <Typography component="span" variant="body1" color="inherit" className={classes.round}>
+                    <Typography
+                        component="span"
+                        aria-live="polite"
+                        variant="body1"
+                        color="inherit"
+                        className={classes.round}
+                    >
                         Round{" "}
                         <Tooltip title="Reset">
                             <Button
@@ -131,7 +134,7 @@ function TopBar(props: Props) {
                 </Toolbar>
             </AppBar>
             <SwipeableDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} onOpen={() => setDrawerOpen(true)}>
-                <List className={classes.drawerListDesktop} subheader={<ListSubheader>Settings</ListSubheader>}>
+                <List subheader={<ListSubheader>Settings</ListSubheader>}>
                     <ListItem data-cy="settings-theme" button onClick={() => toggleTheme(props.theme)}>
                         <ListItemIcon>
                             <BrightnessMediumIcon />
@@ -153,7 +156,7 @@ function TopBar(props: Props) {
                         button
                         onClick={() => setAnalyticsEnabled(!analyticsEnabled)}
                     >
-                        <ListItemText primary="Anonymous data collection" />
+                        <ListItemText primary="Anonymous usage data collection" secondary="Helps me improve this app" />
                         <ListItemSecondaryAction>
                             <Switch
                                 checked={analyticsEnabled}
@@ -219,14 +222,14 @@ function TopBar(props: Props) {
                         <ListItemText primary={"Clear encounter"} />
                         <ListItemText
                             secondary={
-                                <Button
+                                <IconButton
                                     data-cy="clear-encounter-btn"
                                     onClick={() => {
                                         props.setEncounter(props.encounter.set("creatures", ImmutableList([])));
                                     }}
                                 >
-                                    github
-                                </Button>
+                                    <DeleteIcon />
+                                </IconButton>
                             }
                         />
                     </ListItem>
