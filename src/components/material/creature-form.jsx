@@ -62,6 +62,7 @@ function CreatureForm(props: Props) {
                 <form noValidate autoComplete="off">
                     <FormControl className={classes.textField}>
                         <TextField
+                            disabled={creature.get("expanded") ? null : true}
                             data-cy="creature-name"
                             label="Creature name"
                             value={creature.get("name")}
@@ -71,6 +72,7 @@ function CreatureForm(props: Props) {
                     </FormControl>
                     <FormControl className={classes.textField}>
                         <TextField
+                            disabled={creature.get("expanded") ? null : true}
                             data-cy="creature-init"
                             label="Initiative"
                             value={isNaN(creature.get("initiative")) ? "" : creature.get("initiative")}
@@ -81,6 +83,7 @@ function CreatureForm(props: Props) {
                     </FormControl>
                     <FormControl className={classes.textField}>
                         <TextField
+                            disabled={creature.get("expanded") ? null : true}
                             data-cy="creature-max-hp"
                             label="Max HP"
                             value={isNaN(creature.get("hp")) ? "" : creature.get("hp")}
@@ -92,6 +95,7 @@ function CreatureForm(props: Props) {
                     <FormControl className={classes.textField}>
                         <InputLabel htmlFor="creature-type">NPC or PC</InputLabel>
                         <Select
+                            disabled={creature.get("expanded") ? null : true}
                             data-cy="creature-type"
                             value={creature.get("type")}
                             onChange={handleChange("type", v => (isAllowedType(v) ? v : head(allowedCreatureTypes)))}
@@ -112,6 +116,7 @@ function CreatureForm(props: Props) {
             <Grid item xs={12} sm={smCols}>
                 <FormControl className={classes.textFieldFull}>
                     <TextField
+                        disabled={creature.get("expanded") ? null : true}
                         data-cy="creature-notes"
                         label="Notes"
                         value={creature.get("notes")}
@@ -127,6 +132,7 @@ function CreatureForm(props: Props) {
                         <FormControlLabel
                             control={
                                 <Switch
+                                    disabled={creature.get("expanded") ? null : true}   
                                     data-cy="toggle-multiple"
                                     checked={creature.get("multiple")}
                                     onChange={handleChangeBool("multiple", v => !!v)}

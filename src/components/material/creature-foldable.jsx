@@ -111,6 +111,7 @@ function CreatureFoldable(props: Props) {
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
                 <IconButton
+                    disabled={creature.get("expanded") ? null : true}
                     data-cy="delete-creature-btn"
                     aria-label="Delete"
                     onClick={() => {
@@ -127,6 +128,7 @@ function CreatureFoldable(props: Props) {
                     <DeleteIcon />
                 </IconButton>
                 <IconButton
+                    disabled={creature.get("expanded") ? null : true}
                     data-cy="save-creature-btn"
                     aria-label="Save"
                     onClick={() => {

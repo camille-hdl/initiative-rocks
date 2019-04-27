@@ -1,5 +1,6 @@
 {
     "name": "Initiative Rocks!",
+    "short_name": "Init.Rocks!",
     "icons": [
         {
             "src": "/images/icon-192.png",

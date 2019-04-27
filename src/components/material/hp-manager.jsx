@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from "react";
 
 import { withStyles } from "@material-ui/core/styles";
+import { map as _map, addIndex } from "ramda";
 import Typography from "@material-ui/core/Typography";
 import Modal from "@material-ui/core/Modal";
+import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import green from "@material-ui/core/colors/green";
@@ -15,6 +17,7 @@ import { getCurrentHP } from "../../lib/creatures.js";
 import * as _exprEval from "expr-eval";
 import { Map, List } from "immutable";
 const exprEval = _exprEval.default;
+const map = addIndex(_map);
 const styles = theme => ({
     paper: {
         position: "absolute",
@@ -22,10 +25,24 @@ const styles = theme => ({
         left: `50%`,
         transform: `translate(-50%, -50%)`,
         width: theme.spacing.unit * 70,
+        maxWidth: "100%",
         backgroundColor: theme.palette.background.paper,
         boxShadow: theme.shadows[5],
         padding: theme.spacing.unit * 4,
         outline: "none",
+    },
+    amountInput: {
+        width: "100%",
+    },
+    buttonHealing: {
+        marginLeft: "5%",
+        borderColor: green[500],
+        width: "45%",
+    },
+    buttonDamage: {
+        marginRight: "5%",
+        borderColor: red[500],
+        width: "45%",
     },
     buttonFullHP: {
         color: green[500],
@@ -46,6 +63,18 @@ const styles = theme => ({
     button0HP: {
         color: red[400],
         borderColor: red[400],
+    },
+    eventNeutral: {
+        padding: theme.spacing.unit,
+        color: "#F0F0F0",
+    },
+    eventDamage: {
+        padding: theme.spacing.unit,
+        color: red[400],
+    },
+    eventHealing: {
+        padding: theme.spacing.unit,
+        color: green[500],
     },
 });
 
@@ -107,61 +136,91 @@ function HpManager(props: Props) {
             </Button>
             <Modal open={open} onClick={e => e.stopPropagation()} onClose={() => setOpen(false)}>
                 <div className={classes.paper} data-cy="hp-manager-modal">
-                    <Typography variant="h6" id="amount" data-cy="hp-manager-amount">
-                        {amount}
-                    </Typography>
-                    <TextField
-                        data-cy="hp-manager-input"
-                        label="Amount"
-                        value={expr}
-                        onChange={e => setExpr(e.target.value)}
-                        margin="normal"
-                    />
-                    <div>
-                        <Button
-                            data-cy="hp-manager-damage"
-                            onClick={() => {
-                                if (amount === 0) return;
-                                setExpr("");
-                                setOpen(false);
-                                updateInstance(instance.update("events", events => events.push(amount * -1)));
-                                if (window.myAnalytics) {
-                                    window.myAnalytics.event({
-                                        eventCategory: "encounter",
-                                        eventAction: "damage_creature",
-                                        eventLabel: expr,
-                                    });
-                                }
-                            }}
-                        >
-                            <span role="img" aria-label="Damage">
-                                ⚔️
-                            </span>
-                        </Button>
-                        <Button
-                            data-cy="hp-manager-healing"
-                            onClick={() => {
-                                if (amount === 0) return;
-                                setExpr("");
-                                setOpen(false);
-                                updateInstance(instance.update("events", events => events.push(amount)));
-                                if (window.myAnalytics) {
-                                    window.myAnalytics.event({
-                                        eventCategory: "encounter",
-                                        eventAction: "heal_creature",
-                                        eventLabel: expr,
-                                    });
-                                }
-                            }}
-                        >
-                            <span role="img" aria-label="Healing">
-                                💚
-                            </span>
-                            {getOverheal(creature.get("hp"), instance.get("events").push(amount)) > 0
-                                ? ` (${getOverheal(creature.get("hp"), instance.get("events").push(amount))} overheal)`
+                    <Grid container spacing={12}>
+                        <Grid item xs={12}>
+                            <Typography variant="h6" id="amount" data-cy="hp-manager-amount">
+                                {amount}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                data-cy="hp-manager-input"
+                                className={classes.amountInput}
+                                label="Amount"
+                                value={expr}
+                                onChange={e => setExpr(e.target.value)}
+                                margin="normal"
+                                inputProps={{ inputmode: "numeric" }}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                data-cy="hp-manager-damage"
+                                variant="outlined"
+                                className={classes.buttonDamage}
+                                onClick={() => {
+                                    if (amount === 0) return;
+                                    setExpr("");
+                                    setOpen(false);
+                                    updateInstance(instance.update("events", events => events.push(amount * -1)));
+                                    if (window.myAnalytics) {
+                                        window.myAnalytics.event({
+                                            eventCategory: "encounter",
+                                            eventAction: "damage_creature",
+                                            eventLabel: expr,
+                                        });
+                                    }
+                                }}
+                            >
+                                <span role="img" aria-label="Damage">
+                                    ⚔️
+                                </span>
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                className={classes.buttonHealing}
+                                data-cy="hp-manager-healing"
+                                onClick={() => {
+                                    if (amount === 0) return;
+                                    setExpr("");
+                                    setOpen(false);
+                                    updateInstance(instance.update("events", events => events.push(amount)));
+                                    if (window.myAnalytics) {
+                                        window.myAnalytics.event({
+                                            eventCategory: "encounter",
+                                            eventAction: "heal_creature",
+                                            eventLabel: expr,
+                                        });
+                                    }
+                                }}
+                            >
+                                <span role="img" aria-label="Healing">
+                                    💚
+                                </span>
+                                {getOverheal(creature.get("hp"), instance.get("events").push(amount)) > 0
+                                    ? ` +${getOverheal(creature.get("hp"), instance.get("events").push(amount))}`
+                                    : null}
+                            </Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                            {instance.get("events").size > 0
+                                ? map(
+                                      ev =>
+                                          ev === 0 ? (
+                                              <span className={classes.eventNeutral}>{ev}</span>
+                                          ) : ev > 0 ? (
+                                              <span className={classes.eventHealing}>{`+${ev}`}</span>
+                                          ) : (
+                                              <span className={classes.eventDamage}>{ev}</span>
+                                          ),
+                                      instance
+                                          .get("events")
+                                          .reverse()
+                                          .toArray()
+                                  )
                                 : null}
-                        </Button>
-                    </div>
+                        </Grid>
+                    </Grid>
                 </div>
             </Modal>
         </>
