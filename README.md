@@ -1,6 +1,13 @@
-# initiative.rocks
+# [initiative.rocks](https://initiative.rocks/)
 [![Build Status](https://travis-ci.org/camille-hdl/initiative-rocks.svg?branch=master)](https://travis-ci.org/camille-hdl/initiative-rocks) 
 
+
+This is a simple combat tracker for d&d.  
+
+* Track rounds, turn order and HP
+* Manage groups of creatures
+* Save creatures for later use
+* Works offline (PWA)
 
 ## Commands
 
