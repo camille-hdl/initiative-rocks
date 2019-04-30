@@ -93,7 +93,7 @@ const computeExpr = (str: string): number => {
     try {
         const parser = new exprEval.Parser();
         const expr = parser.parse(str);
-        const result = expr.evaluate();
+        const result = Math.floor(expr.evaluate());
         lastValidExpression = str;
         return result;
     } catch (e) {
@@ -123,16 +123,15 @@ function HpManager(props: Props) {
     const inputRef = amountInputRef.current;
     const { classes, creature, instance, updateInstance } = props;
     const [open, setOpen] = useState(false);
+    const [hasRef, setHasRef] = useState(false);
     const [expr, setExpr] = useState("");
     const amount = computeExpr(expr);
     const currentHP = getCurrentHP(creature.get("hp"), instance.get("events"));
     useEffect(() => {
-        setTimeout(() => {
-            if (open && amountInputRef.current) {
-                amountInputRef.current.focus();
-            }
-        }, 0);
-    }, [open, inputRef, amountInputRef]);
+        if (hasRef && open && amountInputRef.current) {
+            amountInputRef.current.focus();
+        }
+    }, [open, inputRef, hasRef, amountInputRef]);
     return (
         <>
             <Button
@@ -157,9 +156,17 @@ function HpManager(props: Props) {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                inputRef={amountInputRef}
+                                inputRef={ref => {
+                                    amountInputRef.current = ref;
+                                    if (ref) {
+                                        setHasRef(true);
+                                    } else {
+                                        setHasRef(false);
+                                    }
+                                }}
                                 data-cy="hp-manager-input"
                                 className={classes.amountInput}
+                                placeholder="ex: 14+15/2"
                                 label="Amount"
                                 value={expr}
                                 onChange={e => setExpr(e.target.value)}

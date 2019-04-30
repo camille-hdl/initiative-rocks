@@ -1,6 +1,6 @@
 {
   "name": "initiative-rocks",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Combat tracker for d&d 5e",
   "main": "public/index.html",
   "scripts": {

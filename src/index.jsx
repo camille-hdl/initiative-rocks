@@ -33,7 +33,8 @@ const checkRestoredState = (defaultInitState: Map, restoredState: Map | null) =>
     if (typeof window.__DO_NOT_RESTORE_STATE__ !== "undefined" && window.__DO_NOT_RESTORE_STATE__)
         return defaultInitState;
     if (!restoredState) return defaultInitState;
-    if (defaultInitState.get("version") !== restoredState.get("version")) return defaultInitState;
+    // pour l'instant on autorise de réutiliser le state même si la version ne correspond pas
+    // if (defaultInitState.get("version") !== restoredState.get("version")) return defaultInitState;
     return defaultInitState.merge(restoredState);
 };
 
