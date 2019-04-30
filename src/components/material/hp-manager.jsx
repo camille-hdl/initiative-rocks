@@ -1,5 +1,5 @@
 //@flow
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { withStyles } from "@material-ui/core/styles";
 import { map as _map, addIndex } from "ramda";
@@ -114,12 +114,25 @@ const getButtonClass = (maxHP: number, amount: number): string => {
     return "button0HP";
 };
 
+/**
+ * This element manages HP display on a creature, as well as the HP modification modal.
+ * The input is focused when the modal is opened, as only one modal can be usable at once
+ */
 function HpManager(props: Props) {
+    const amountInputRef = useRef();
+    const inputRef = amountInputRef.current;
     const { classes, creature, instance, updateInstance } = props;
     const [open, setOpen] = useState(false);
     const [expr, setExpr] = useState("");
     const amount = computeExpr(expr);
     const currentHP = getCurrentHP(creature.get("hp"), instance.get("events"));
+    useEffect(() => {
+        setTimeout(() => {
+            if (open && amountInputRef.current) {
+                amountInputRef.current.focus();
+            }
+        }, 0);
+    }, [open, inputRef, amountInputRef]);
     return (
         <>
             <Button
@@ -136,7 +149,7 @@ function HpManager(props: Props) {
             </Button>
             <Modal open={open} onClick={e => e.stopPropagation()} onClose={() => setOpen(false)}>
                 <div className={classes.paper} data-cy="hp-manager-modal">
-                    <Grid container spacing={12}>
+                    <Grid container>
                         <Grid item xs={12}>
                             <Typography variant="h6" id="amount" data-cy="hp-manager-amount">
                                 {amount}
@@ -144,13 +157,29 @@ function HpManager(props: Props) {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                inputRef={amountInputRef}
                                 data-cy="hp-manager-input"
                                 className={classes.amountInput}
                                 label="Amount"
                                 value={expr}
                                 onChange={e => setExpr(e.target.value)}
                                 margin="normal"
-                                inputProps={{ inputmode: "numeric" }}
+                                inputProps={{ inputMode: "numeric" }}
+                                onKeyPress={ev => {
+                                    if (ev.which === 13) {
+                                        if (amount === 0) return;
+                                        setExpr("");
+                                        setOpen(false);
+                                        updateInstance(instance.update("events", events => events.push(amount * -1)));
+                                        if (window.myAnalytics) {
+                                            window.myAnalytics.event({
+                                                eventCategory: "encounter",
+                                                eventAction: "damage_creature",
+                                                eventLabel: expr,
+                                            });
+                                        }
+                                    }
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -158,6 +187,7 @@ function HpManager(props: Props) {
                                 data-cy="hp-manager-damage"
                                 variant="outlined"
                                 className={classes.buttonDamage}
+                                title="Damage the creature (press enter)"
                                 onClick={() => {
                                     if (amount === 0) return;
                                     setExpr("");
@@ -180,6 +210,7 @@ function HpManager(props: Props) {
                                 variant="outlined"
                                 className={classes.buttonHealing}
                                 data-cy="hp-manager-healing"
+                                title="Heal the creature"
                                 onClick={() => {
                                     if (amount === 0) return;
                                     setExpr("");
@@ -205,13 +236,17 @@ function HpManager(props: Props) {
                         <Grid item xs={12}>
                             {instance.get("events").size > 0
                                 ? map(
-                                      ev =>
+                                      (ev: number, index: number) =>
                                           ev === 0 ? (
-                                              <span className={classes.eventNeutral}>{ev}</span>
+                                              <span key={index} className={classes.eventNeutral}>
+                                                  {ev}
+                                              </span>
                                           ) : ev > 0 ? (
-                                              <span className={classes.eventHealing}>{`+${ev}`}</span>
+                                              <span key={index} className={classes.eventHealing}>{`+${ev}`}</span>
                                           ) : (
-                                              <span className={classes.eventDamage}>{ev}</span>
+                                              <span key={index} className={classes.eventDamage}>
+                                                  {ev}
+                                              </span>
                                           ),
                                       instance
                                           .get("events")

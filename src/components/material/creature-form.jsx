@@ -1,7 +1,7 @@
 //@flow
-import React, { memo } from "react";
+import React, { memo, useRef, useEffect, useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { includes, partialRight, head, map } from "ramda";
+import { includes, partialRight, head, map, isNil } from "ramda";
 import MenuItem from "@material-ui/core/MenuItem";
 import Input from "@material-ui/core/Input";
 import TextField from "@material-ui/core/TextField";
@@ -42,10 +42,25 @@ const identity = v => v;
 /**
  * Form for a creature. If the creature is set as "multiple", we use the same name and initiative for a group of
  * creatures.
- * each individual in the group is an "instance"
+ * each individual in the group is an "instance".
+ * The first time that the form is mounted and is visible, if the creature name is empty,
+ * we focus on the field
  */
 function CreatureForm(props: Props) {
+    const nameInputRef = useRef(null);
+    const [focused, setFocused] = useState(false);
     const { classes, creature, updateCreature } = props;
+
+    /**
+     * Focus the first input on first render
+     */
+    useEffect(() => {
+        if (creature.get("expanded") && !creature.get("name") && nameInputRef.current && !focused) {
+            nameInputRef.current.focus();
+            setFocused(true);
+        }
+    }, [nameInputRef, creature, focused, setFocused]);
+
     const handleChange = (prop: string, transformer?: (val: any) => any = identity) => ev =>
         updateCreature(creature.set(prop, transformer(ev.target.value)));
     const handleChangeBool = (prop: string, transformer?: (val: any) => any = identity) => ev =>
@@ -65,6 +80,7 @@ function CreatureForm(props: Props) {
                             disabled={creature.get("expanded") ? null : true}
                             data-cy="creature-name"
                             label="Creature name"
+                            inputRef={nameInputRef}
                             value={creature.get("name")}
                             onChange={handleChange("name")}
                             margin="normal"
@@ -75,8 +91,12 @@ function CreatureForm(props: Props) {
                             disabled={creature.get("expanded") ? null : true}
                             data-cy="creature-init"
                             label="Initiative"
-                            value={isNaN(creature.get("initiative")) ? "" : creature.get("initiative")}
-                            onChange={handleChange("initiative", v => (isNaN(v) ? null : +v))}
+                            value={
+                                isNaN(creature.get("initiative")) || isNil(creature.get("initiative"))
+                                    ? ""
+                                    : creature.get("initiative")
+                            }
+                            onChange={handleChange("initiative", v => (isNaN(v) || v === "" ? null : +v))}
                             margin="normal"
                             type="number"
                         />
@@ -86,8 +106,8 @@ function CreatureForm(props: Props) {
                             disabled={creature.get("expanded") ? null : true}
                             data-cy="creature-max-hp"
                             label="Max HP"
-                            value={isNaN(creature.get("hp")) ? "" : creature.get("hp")}
-                            onChange={handleChange("hp", v => (isNaN(v) ? null : +v))}
+                            value={isNaN(creature.get("hp")) || isNil(creature.get("hp")) ? "" : creature.get("hp")}
+                            onChange={handleChange("hp", v => (isNaN(v) || v === "" ? null : +v))}
                             margin="normal"
                             type="number"
                         />
@@ -97,7 +117,7 @@ function CreatureForm(props: Props) {
                         <Select
                             disabled={creature.get("expanded") ? null : true}
                             data-cy="creature-type"
-                            value={creature.get("type")}
+                            value={creature.get("type") ? creature.get("type") : ""}
                             onChange={handleChange("type", v => (isAllowedType(v) ? v : head(allowedCreatureTypes)))}
                             input={<Input name="age" id="creature-type" />}
                         >
@@ -132,7 +152,7 @@ function CreatureForm(props: Props) {
                         <FormControlLabel
                             control={
                                 <Switch
-                                    disabled={creature.get("expanded") ? null : true}   
+                                    disabled={creature.get("expanded") ? null : true}
                                     data-cy="toggle-multiple"
                                     checked={creature.get("multiple")}
                                     onChange={handleChangeBool("multiple", v => !!v)}
