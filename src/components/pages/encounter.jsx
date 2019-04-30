@@ -12,6 +12,7 @@ import { fromJS, Map } from "immutable";
 import { map as _map, addIndex } from "ramda";
 import Creature from "../material/creature-foldable.jsx";
 import Link from "@material-ui/core/Link";
+import Notifications from "../material/notifications.jsx";
 
 const map = addIndex(_map);
 import { getNewCreature } from "../../lib/creatures.js";
@@ -190,6 +191,7 @@ function Encounter(props: Props & { classes: any }) {
                     Next Turn
                 </Fab>
             </div>
+            <Notifications savedCreatures={props.savedCreatures} />
         </>
     );
 }

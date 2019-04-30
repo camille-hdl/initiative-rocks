@@ -32,7 +32,14 @@ const removeCreatureReducer = (state: Map, data: Map): Map => {
  * Add a creature to the saved creatures
  */
 const saveCreatureReducer = (state: Map, data: Map): Map => {
-    return state.update("savedCreatures", savedCreatures => savedCreatures.push(data.set("id", "" + Math.random())));
+    return state.update("savedCreatures", savedCreatures =>
+        savedCreatures.push(
+            data
+                .set("id", "" + Math.random())
+                .set("initiative", null)
+                .set("expanded", false)
+        )
+    );
 };
 
 /**
@@ -55,7 +62,8 @@ const reducersMap: { [actionType: string]: Reducer } = {
 };
 const stateSaver = createDebounced(1000);
 export default function App(state: Map, action: { type: string, data: any }) {
-    const newState = typeof reducersMap[action.type] === "function" ? reducersMap[action.type](state, action.data) : state;
+    const newState =
+        typeof reducersMap[action.type] === "function" ? reducersMap[action.type](state, action.data) : state;
     stateSaver(newState); // SIDE EFFECT
     return newState;
 }
