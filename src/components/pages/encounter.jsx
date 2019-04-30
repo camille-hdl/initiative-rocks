@@ -94,7 +94,7 @@ function Encounter(props: Props & { classes: any }) {
     };
     return (
         <>
-            <Grid container spacing={24}>
+            <Grid container>
                 <Grid item xs={12}>
                     {creatureList}
                     {props.initiativeOrder.size <= 0 ? (
@@ -159,9 +159,9 @@ function Encounter(props: Props & { classes: any }) {
             <div className={classes.fabContainer}>
                 <Fab
                     color="secondary"
-                    aria-label="Add a creature"
                     className={classes.fab}
                     data-cy="add-creature-fab"
+                    title="Add a creature"
                     onClick={() => {
                         props.setEncounter(
                             props.encounter.update("creatures", creatures => creatures.push(fromJS(getNewCreature())))
@@ -179,8 +179,8 @@ function Encounter(props: Props & { classes: any }) {
                 <Fab
                     variant="extended"
                     color="primary"
-                    aria-label="Next turn"
                     data-cy="nex-turn-fab"
+                    title="Next turn"
                     className={classes.fab}
                     onClick={() => {
                         nextTurn();
